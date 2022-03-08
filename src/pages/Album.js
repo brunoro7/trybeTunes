@@ -5,8 +5,12 @@ class Album extends React.Component {
   render() {
     return (
       <div data-testid="page-album">
-        <Header />
-        Album
+        <h2>
+          Album
+        </h2>
+        <h3>
+          <Header />
+        </h3>
       </div>
     );
   }
