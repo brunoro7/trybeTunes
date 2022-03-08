@@ -74,7 +74,7 @@ class Login extends React.Component {
             </button>
           </section>
         )}
-        <Redirect to={ urlToSearch } />
+        <Redirect exact to={ urlToSearch } />
       </div>
     );
   }
