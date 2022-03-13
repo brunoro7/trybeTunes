@@ -37,15 +37,12 @@ class Search extends React.Component {
   handleButtonSearch = async () => {
     const { inputSearchValue } = this.state;
     const getAPIdata = await searchAlbumsAPIs(inputSearchValue);
-    this.setState({
+    this.setState((prevState) => ({
       loadingValue: true,
       resultSearchValue: [...getAPIdata],
-      searchValue: inputSearchValue,
-    }, () => {
-      this.setState({
-        inputSearchValue: '',
-      });
-    });
+      searchValue: prevState.inputSearchValue,
+      inputSearchValue: '',
+    }));
     this.setState({
       loadingValue: false,
       comparResultSearch: true,
@@ -77,16 +74,16 @@ class Search extends React.Component {
                 </h3>)
               : resultSearchValue.map((eachSearcValue) => (
                 <li key={ eachSearcValue.collectionId }>
-                  <img src={ eachSearcValue.artworkUrl100 } alt="Imagem do Produto" />
                   <h3>
                     <Link
                       to={ `/album/${eachSearcValue.collectionId}` }
                       data-testid={ `link-to-album-${eachSearcValue.collectionId}` }
                     >
-                      { eachSearcValue.artistName }
+                      <img src={ eachSearcValue.artworkUrl100 } alt="Imagem do Produto" />
+                      <h3>{ eachSearcValue.artistName }</h3>
+                      <h4>{ eachSearcValue.collectionName }</h4>
                     </Link>
                   </h3>
-                  <h4>{ eachSearcValue.collectionName }</h4>
                 </li>
               ))
           }
