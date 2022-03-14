@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { addSong } from '../services/favoriteSongsAPI';
+import { addSong, removeSong } from '../services/favoriteSongsAPI';
 import LoadMsg from '../pages/LoadMsg';
 
 class MusicCard extends React.Component {
@@ -12,24 +12,40 @@ class MusicCard extends React.Component {
     };
   }
 
-  handleAddFavoriteSong = async (event) => {
+  componentDidMount() {
+    const { isFavSong } = this.props;
+    if (isFavSong) {
+      this.setState({
+        inputCheck: isFavSong,
+      });
+    }
+    // console.log(isFavSong);
+  }
+
+  handleAddFavoriteSong = async () => {
     this.setState({
       loadingValue: true,
     });
+    const { inputCheck } = this.state;
+
     const { preview, name, trackId } = this.props;
     const favoriteSongObj = {
       preview,
       name,
       trackId,
     };
-    const getAddSong = await addSong(favoriteSongObj);
-    const eventValue = event.target.checked;
+
+    if (inputCheck === false) {
+      await addSong(favoriteSongObj);
+    } else {
+      await removeSong(favoriteSongObj);
+    }
     this.setState({
-      inputCheck: eventValue,
+      inputCheck: !inputCheck,
       loadingValue: false,
     });
     // console.log(eventValue);
-    console.log(getAddSong);
+    // console.log(getAddSong);
   }
 
   render() {
@@ -53,16 +69,16 @@ class MusicCard extends React.Component {
             Favorita
             {' '}
             <input
-              type="checkbox"
-              data-testid={ `checkbox-music-${trackId}` }
-              name="favoriteSong"
               id={ trackId }
+              type="checkbox"
+              name="favoriteSong"
+              data-testid={ `checkbox-music-${trackId}` }
               onChange={ this.handleAddFavoriteSong }
-              value={ inputCheck }
+              checked={ inputCheck }
             />
-            <div>
+            <span>
               { (loadingValue) ? <LoadMsg /> : '' }
-            </div>
+            </span>
           </label>
         </section>
       </div>
@@ -74,6 +90,7 @@ MusicCard.propTypes = {
   preview: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   trackId: PropTypes.number.isRequired,
+  isFavSong: PropTypes.func.isRequired,
 };
 
 export default MusicCard;
